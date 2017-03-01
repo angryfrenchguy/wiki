@@ -1,99 +1,105 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="utf-8">
     <!-- Pas certain quess ça fait. -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
     <title>Quelque Chose avec Wikipedia</title>
-    
-<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
-    
-<!-- JQuery est obligatoire pour le bon fonctionnemnt de Bootstrap ET DOIT LOADER AVANT!! -->    
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    
+
+    <link href="https://fonts.googleapis.com/css?family=Francois+One" rel="stylesheet">
+
+    <!-- JQuery est obligatoire pour le bon fonctionnemnt de Bootstrap ET DOIT LOADER AVANT!! -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
     <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
     <style>
-    
-    h1 {
-    font-family: 'Roboto Mono', monospace;
+        h1 {
+            font-family: 'Francois One', sans-serif;
+            font-size: 3em;
         }
-    .jumbotron {
-        margin-top: 20px;
-        }    
         
+        .jumbotron {
+            margin-top: 20px;
+        }
+        
+        #rechercheIn {
+            margin-bottom: 5px;
+        }
     </style>
-    
 </head>
-    
+
 <body>
-    
+
     <div class="container">
-    
-    <div class="jumbotron">
-    <h1 class="text-center text-primary">Wikipanglais</h1>
-    </div>
-    
-    <div class="row">
-      <div class="col-md-6 col-md-offset-3">
-        <div class="input-group">
-          <input type="text" class="form-control" id="quoi">
-          <span class="input-group-btn">
-            <button class="btn btn-primary" type="button" id="bouton">Cherche</button>
-          </span>
-            
-            <span class="input-group-btn">
-            <button class="btn btn-danger" type="button" id="fo">Ah! Pis Fuck!</button>
-          </span>
-            
-        </div>      
-      </div>
-    </div>
-        
-    <br>
-        
-    
+        <div class="jumbotron">
+            <h1 class="text-center text-primary">Wikipanglais</h1>
+        </div>
+
+        <div class="row">
+            <div  id="rechercheOut" class="col-md-6 col-md-offset-3">
+                <div id="rechercheIn" class="input-group input-group-lg">
+                    <input type="text" class="form-control" id="quoi">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" id="bouton">Cherche</button>
+                    </span>
+                </div>
+                
+                <span id="fuck" class="input-group-btn">
+                <button class="btn btn-danger btn-block btn-lg" type="button" id="fo">Ah! Pis Fuck!</button>
+                </span>       
+            </div>
+        </div>
+        <br>
         <div class="list-group" id="resultats">
         </div>
-  
-        
     </div>
-    
 
-    
-<script>
-    $(document).ready(function() {
-        
-        $("#bouton").on("click", function() {
-            var quoi = $("#quoi").val();
-            $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&format=json', function(json) {
-                var liste = json[3];
-                var listeURL = "";
-                
-                for(i = 0;i < liste.length;i++) {
-                      listeURL += "<button type='button' class='list-group-item'>" + "<a href='" + json[3][i] + "'>" + json[1][i] + "</a>"
-+ "</li><br>";
-                  };
-                $("#resultats").html(listeURL);
+    <script>
+        $(document).ready(function () {
+
+            $("#bouton").on("click", function () {
+                var quoi = $("#quoi").val();
+                $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&format=json', function (json) {
+                    var liste = json[3];
+                    var listeURL = "";
+                        
+                    for (i=0;i < liste.length;i++) {
+                        listeURL += "<a href='" + json[3][i] + "' class='btn list-group-item' role='button'>" + json[1][i] + "</a>";
+                    };
+                    $("#resultats").html(listeURL);
+                });
             });
-        });
-        
-        $("#fo").on("click", function() {
+
+            $("#fo").on("click", function () {
+
+                $("#resultats").html("<a href='https://fr.wikipedia.org/wiki/Special:Random' class='btn list-group-item' role='button'>Surprise!</a>");
+            });
             
-            $("#resultats").html("<button type='button' class='list-group-item'><a href='https://fr.wikipedia.org/wiki/Special:Random'>Surprise!</a>");
+           $(window).on("resize load", function() {
+               if($(window).width() > 500) {
+                $("#fuck").appendTo("#rechercheIn");
+                $("#rechercheIn").removeClass("input-group-lg");
+                $("#fo").removeClass("btn-lg");
+               } else {
+                $("#fuck").appendTo("#rechercheOut");
+                $("#rechercheIn").addClass("input-group-lg");
+                $("#fo").addClass("btn-lg");
+            }
+           });
         });
-        
-    });
-</script>    
-    
+    </script>
+
 </body>
+
 </html>

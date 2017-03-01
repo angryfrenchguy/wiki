@@ -10,6 +10,9 @@
     
 <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
     
+<!-- JQuery est obligatoire pour le bon fonctionnemnt de Bootstrap ET DOIT LOADER AVANT!! -->    
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    
     <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -18,17 +21,14 @@
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-<!-- JQuery est obligatoire pou rle bon fonctionnemnt de Bootstrap -->    
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     
     <style>
     
     h1 {
     font-family: 'Roboto Mono', monospace;
         }
-        .jumbotron {
-            margin-top: 20px;
+    .jumbotron {
+        margin-top: 20px;
         }    
         
     </style>
@@ -46,15 +46,54 @@
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
         <div class="input-group">
-          <input type="text" class="form-control">
+          <input type="text" class="form-control" id="quoi">
           <span class="input-group-btn">
-            <button class="btn btn-primary" type="button">Cherche</button>
+            <button class="btn btn-primary" type="button" id="bouton">Cherche</button>
           </span>
+            
+            <span class="input-group-btn">
+            <button class="btn btn-danger" type="button" id="fo">Ah! Pis Fuck!</button>
+          </span>
+            
         </div>      
       </div>
     </div>
         
+    <br>
+        
+    
+        <div class="list-group" id="resultats">
+        </div>
+  
+        
     </div>
+    
+
+    
+<script>
+    $(document).ready(function() {
+        
+        $("#bouton").on("click", function() {
+            var quoi = $("#quoi").val();
+            $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&format=json', function(json) {
+                var liste = json[3];
+                var listeURL = "";
+                
+                for(i = 0;i < liste.length;i++) {
+                      listeURL += "<button type='button' class='list-group-item'>" + "<a href='" + json[3][i] + "'>" + json[1][i] + "</a>"
++ "</li><br>";
+                  };
+                $("#resultats").html(listeURL);
+            });
+        });
+        
+        $("#fo").on("click", function() {
+            
+            $("#resultats").html("<button type='button' class='list-group-item'><a href='https://fr.wikipedia.org/wiki/Special:Random'>Surprise!</a>");
+        });
+        
+    });
+</script>    
     
 </body>
 </html>

@@ -64,16 +64,52 @@
         <div class="list-group" id="resultats">
         </div>
     </div>
+    
+    <script>
+    
+    </script>
 
     <script>
         $(document).ready(function () {
 
             $("#bouton").on("click", function () {
                 var quoi = $("#quoi").val();
-                $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&format=json', function (json) {
+                $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=50&format=json', function (json) {
                     var liste = json[3];
                     var listeURL = "";
-                        
+                    
+            for (y = 0; y <  liste.length; y++) {
+                
+                var rX = /[^https://fr.wikipedia.org/wiki/].*$/g;
+                var rXs = rX.exec(liste[y]);
+                
+                $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json', function (json2) {
+//                    var urlEn = json2.query.pages;
+//                    var urlEn2 = json2.query.pages.pageid;
+                    
+                    for (var urlEn in json2.query.pages) {
+                        console.log(json2.query.pages[urlEn].langlinks)
+                    };
+                    
+                    
+//                    for (var prop in c.success) {
+//  alert(c.success[prop].__id__); // Replace the alert with whatever you want to do with the ID
+//  // break; // Uncomment if there can be more than one ID returned and you only want one
+//}
+                    
+//                    Tu es rendu ici. Tu essaye de trouver le moyen de voir si tes résultats ont un langlink pour pouvoir les éliminer. Apparament, passer la variable comme dans json2.query.urlEn, ça marche pas...
+                     
+                });
+            };
+                    
+             console.log(liste);
+             console.log(rXs);
+             
+             
+                    
+                    
+//          En bas d'ici, c'est du code pour la mise en page 
+            
                     for (i=0;i < liste.length;i++) {
                         listeURL += "<a href='" + json[3][i] + "' class='btn list-group-item' role='button'>" + json[1][i] + "</a>";
                     };

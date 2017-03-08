@@ -64,71 +64,60 @@
         <div class="list-group" id="resultats">
         </div>
     </div>
-    
-    <script>
-    
-    </script>
 
     <script>
         $(document).ready(function () {
             
-            var liste, rX, rXs;
+            var liste
+            var rXs = [];
+            var rX = /^https:\/\/fr.wikipedia.org\/wiki\/(.*)$/;
             var listeURL = "";
             var liste2 = [];
 
             $("#bouton").on("click", function () {
+                
+//Array des liens en français reliés à ma recherche
+                
                 var quoi = $("#quoi").val();
                 $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=50&format=json', function (json) {
-                    liste = json[3];
-                
-                    
-//Obtenir le lien vers la/les page(s) en français
-                    
-                    for (u = 0; u < json[3].length;u++) {
-                        rX = /[^https://fr.wikipedia.org/wiki/].*$/g;
-                        
-                    };
-                    
-//Vérifier s'il y a une version anglaise de la page.
+                liste = json[3];
+
+//          Obtenir le nom/title wikipedia de la page                
+
                     
                     for (y = 0; y <  liste.length; y++) {
                         
-//C'est ce qui me permet d'avoir le nom/title wikipedia de la page
-                
-                        rX = /[^https://fr.wikipedia.org/wiki/].*$/g;
-                        rXs = rX.exec(liste[y]);
+                        rXs = rX.exec(liste[y])[1];
+                        rXTitre = rX.exec(liste[y])[0];
                         
+//                        console.log(rX.exec(liste[y])[1]);
                 
                         $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json', function(json2) {
                     
                             for (var pageId in json2.query.pages) {
-                                
-                                
-                                console.log(json2.query.pages[pageId].langlinks === undefined);
-                                
+                                                            
                                 if (json2.query.pages[pageId].langlinks === undefined) {
-                                  liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from);  
+                                    liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from)
                                 };
-                                
-                                console.log(liste2);
-
-//Là, y faut que je check mes résulats et que je conserve seulement ceux qui n'ont pas de langlink ('undefined'?)
-                                
                             };
                             
-                        });
+                        }); 
+                        
                     };
-             
-             
                     
                     
 //          En bas d'ici, c'est du code pour la mise en page 
-            
-                    for (i = 0;i < liste.length;i++) {
+                    
+                    for (i = 0;i < liste2.length;i++) {
                         listeURL += "<a href='" + liste2[i] + "' class='btn list-group-item' role='button'>" + liste2[i] + "</a>";
+                        console.log(liste[i]);
                     };
+                    
+                    
+            
                     $("#resultats").html(listeURL);
-                });
+                });  
+                
             });
 
             $("#fo").on("click", function () {

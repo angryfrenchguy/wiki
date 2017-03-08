@@ -53,11 +53,7 @@
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="button" id="bouton">Cherche</button>
                     </span>
-                </div>
-                
-                <span id="fuck" class="input-group-btn">
-                <button class="btn btn-danger btn-block btn-lg" type="button" id="fo">Ah! Pis Fuck!</button>
-                </span>       
+                </div>       
             </div>
         </div>
         <br>
@@ -73,6 +69,7 @@
             var rX = /^https:\/\/fr.wikipedia.org\/wiki\/(.*)$/;
             var listeURL = "";
             var liste2 = [];
+            var rXTitre = [];
 
             $("#bouton").on("click", function () {
                 
@@ -88,54 +85,36 @@
                     for (y = 0; y <  liste.length; y++) {
                         
                         rXs = rX.exec(liste[y])[1];
-                        rXTitre = rX.exec(liste[y])[0];
                         
-//                        console.log(rX.exec(liste[y])[1]);
                 
                         $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json', function(json2) {
                     
                             for (var pageId in json2.query.pages) {
                                                             
                                 if (json2.query.pages[pageId].langlinks === undefined) {
-                                    liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from)
+                                    liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from);
+                                    
+                                    rXTitre.push(json2.query.normalized[0].to);
                                 };
                             };
-                            
                         }); 
-                        
                     };
                     
                     
-//          En bas d'ici, c'est du code pour la mise en page 
+                    console.log(rXs);
+                    console.log(rXTitre);
                     
-                    for (i = 0;i < liste2.length;i++) {
-                        listeURL += "<a href='" + liste2[i] + "' class='btn list-group-item' role='button'>" + liste2[i] + "</a>";
-                        console.log(liste[i]);
-                    };
+//         Ça marche... comme. Sauf que ça me prends 2 clicks pour avoir mes résultats et que je n'ai pas le titre de la page.
                     
                     
-            
-                    $("#resultats").html(listeURL);
                 });  
                 
-            });
-
-            $("#fo").on("click", function () {
-
-                $("#resultats").html("<a href='https://fr.wikipedia.org/wiki/Special:Random' class='btn list-group-item' role='button'>Surprise!</a>");
-            });
+                for (i = 0;i < liste2.length;i++) {
+                        listeURL += "<a href='" + liste2[i] + "' class='btn list-group-item' role='button'>" + rXTitre[i] + "</a>";
+                    };
             
-           $(window).on("resize load", function() {
-               if($(window).width() > 500) {
-                $("#fuck").appendTo("#rechercheIn");
-                $("#rechercheIn").removeClass("input-group-lg");
-                $("#fo").removeClass("btn-lg");
-               } else {
-                $("#fuck").appendTo("#rechercheOut");
-                $("#rechercheIn").addClass("input-group-lg");
-                $("#fo").addClass("btn-lg");
-            }
-           });
+                    $("#resultats").html(listeURL);
+            });
         });
     </script>
 

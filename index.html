@@ -71,23 +71,39 @@
             var liste2 = [];
             var rXTitre = [];
 
-            $("#bouton").on("click", function () {
-                
-//Array des liens en français reliés à ma recherche
+            $("#bouton").on("click", openSearch);
+        });
+        
+        
+//        Fonctions
+        
+        function printResultats() {
+            for (i = 0;i < liste2.length;i++) {
+                        listeURL += "<a href='" + liste2[i] + "' class='btn list-group-item' role='button'>" + rXTitre[i] + "</a>";
+                    };
+            
+                    $("#resultats").html(listeURL);
+        };
+        
+        function openSearch() {
                 
                 var quoi = $("#quoi").val();
-                $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=50&format=json', function (json) {
+                $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=50&format=json', getTitresEtUrl);
+            };
+        
+        function getTitresEtUrl(json)  {
                 liste = json[3];
-
-//          Obtenir le nom/title wikipedia de la page                
-
                     
                     for (y = 0; y <  liste.length; y++) {
                         
                         rXs = rX.exec(liste[y])[1];
                         
                 
-                        $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json', function(json2) {
+                        $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json', wikiFr); 
+                    };
+                };
+        
+        function wikiFr(json2) {
                     
                             for (var pageId in json2.query.pages) {
                                                             
@@ -97,17 +113,9 @@
                                     rXTitre.push(json2.query.normalized[0].to);
                                 };
                             };
-                        }); 
-                    };
-                });  
-                
-                for (i = 0;i < liste2.length;i++) {
-                        listeURL += "<a href='" + liste2[i] + "' class='btn list-group-item' role='button'>" + rXTitre[i] + "</a>";
-                    };
-            
-                    $("#resultats").html(listeURL);
-            });
-        });
+                        };
+        
+        
     </script>
 
 </body>

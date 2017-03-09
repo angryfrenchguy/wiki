@@ -64,59 +64,108 @@
     <script>
         $(document).ready(function () {
             
-            var liste
-            var rXs = [];
+            var global;
+            var liste = [];
             var rX = /^https:\/\/fr.wikipedia.org\/wiki\/(.*)$/;
-            var listeURL = "";
+            var rXs;
             var liste2 = [];
             var rXTitre = [];
-
-            $("#bouton").on("click", openSearch);
-        });
-        
-        
-//        Fonctions
-        
-        function printResultats() {
-            for (i = 0;i < liste2.length;i++) {
-                        listeURL += "<a href='" + liste2[i] + "' class='btn list-group-item' role='button'>" + rXTitre[i] + "</a>";
-                    };
+            var listeURL = "";
             
-                    $("#resultats").html(listeURL);
+            $("#bouton").on("click", openSearch);
+        
+        
+// ***************************************************** 
+// ********************  Fonctions  ********************
+// *****************************************************
+        
+        
+        function lesResultats(x) {
+             $("#resultats").html(listeURL);
         };
         
         function openSearch() {
-                
-                var quoi = $("#quoi").val();
-                $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=50&format=json', getTitresEtUrl);
+            
+            var quoi = $("#quoi").val();
+            $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=50&format=json', laListe);
+        };
+            
+        function laListe(json) {
+            liste = json[3];
+            for (y = 0; y <  liste.length; y++) {
+                rXs = rX.exec(liste[y])[1];
+                $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json', wikiFr);
             };
-        
-        function getTitresEtUrl(json)  {
-                liste = json[3];
-                    
-                    for (y = 0; y <  liste.length; y++) {
-                        
-                        rXs = rX.exec(liste[y])[1];
-                        
-                
-                        $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json', wikiFr); 
-                    };
-                };
-        
+        };
+            
         function wikiFr(json2) {
-                    
-                            for (var pageId in json2.query.pages) {
-                                                            
-                                if (json2.query.pages[pageId].langlinks === undefined) {
-                                    liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from);
-                                    
-                                    rXTitre.push(json2.query.normalized[0].to);
-                                };
-                            };
-                        };
+            for (var pageId in json2.query.pages) {
+                if (json2.query.pages[pageId].langlinks === undefined) {
+                    liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from);
+                    rXTitre.push(json2.query.normalized[0].to);
+                };
+            };
+            printResultats();
+        };
+            
+        function printResultats() {
+            for (i = 0;i < liste2.length;i++) {
+                listeURL += "<a href='" + liste2[i] + "' class='btn list-group-item' role='button'>" + rXTitre[i] + "</a>";
+            };
+            lesResultats();
+        };
+        
+//        function printResultats() {
+//            for (i = 0;i < liste2.length;i++) {
+//                        listeURL += "<a href='" + liste2[i] + "' class='btn list-group-item' role='button'>" + rXTitre[i] + "</a>";
+//                    };
+//            
+//                    $("#resultats").html(listeURL);
+//        };
+//        
+//        function openSearch() {
+//                
+//                var quoi = $("#quoi").val();
+//                $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=50&format=json', getTitresEtUrl);
+//            };
+//        
+//        function getTitresEtUrl(json)  {
+//                liste = json[3];
+//                    
+//                    for (y = 0; y <  liste.length; y++) {
+//                        
+//                        rXs = rX.exec(liste[y])[1];
+//                        
+//                
+//                        $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json', wikiFr); 
+//                    };
+//                };
+//        
+//        function wikiFr(json2) {
+//                    
+//                            for (var pageId in json2.query.pages) {
+//                                                            
+//                                if (json2.query.pages[pageId].langlinks === undefined) {
+//                                    liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from);
+//                                    
+//                                    rXTitre.push(json2.query.normalized[0].to);
+//                                };
+//                            };
+//                        };
         
         
-    </script>
+//        Variables
+//        
+//            var liste
+//            var rXs = [];
+//            var rX = /^https:\/\/fr.wikipedia.org\/wiki\/(.*)$/;
+//            var listeURL = "";
+//            var liste2 = [];
+//            var rXTitre = [];
+        
+});    
+        
+</script>
 
 </body>
 

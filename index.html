@@ -86,14 +86,14 @@
         function openSearch() {
             
             var quoi = $("#quoi").val();
-            $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=50&format=json', laListe);
+            $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=50&format=json&origin=*', laListe);
         };
             
         function laListe(json) {
             liste = json[3];
             for (y = 0; y <  liste.length; y++) {
                 rXs = rX.exec(liste[y])[1];
-                $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json', wikiFr);
+                $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json&origin=*', wikiFr);
             };
             
 //Mon problème est ici. laListe passe le getJSON à wikiFR *à chaque coup*, et celui-ci fait sont truc et l'envoie à printResultats à chaque fois. Je dois trouver le moyen de n'aller à getResultats que lorsque le for loop qui me popule liste2 et rXTitre est complet.

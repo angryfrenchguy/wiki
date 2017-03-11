@@ -69,7 +69,7 @@
             var rXs;
             var liste2 = [];
             var rXTitre = [];
-            var listeURL = "";
+            var listeURL = [];
             
             $("#bouton").on("click", openSearch);
         
@@ -85,6 +85,11 @@
         
         function openSearch() {
             
+            liste = [];
+            liste2 = [];
+            rXTitre = [];
+            listeURL = [];
+            
             var quoi = $("#quoi").val();
             $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=50&format=json&origin=*', laListe);
         };
@@ -96,6 +101,14 @@
                 $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json&origin=*', wikiFr);
             };
             
+//            function pushPushInTheBush(json2) {
+//                if (json2.query.pages[pageId].langlinks === undefined) {
+//                    liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from);
+//                    rXTitre.push(json2.query.normalized[0].to);
+//                };
+//                wikiFr;
+//            };
+            
 //Mon problème est ici. laListe passe le getJSON à wikiFR *à chaque coup*, et celui-ci fait sont truc et l'envoie à printResultats à chaque fois. Je dois trouver le moyen de n'aller à getResultats que lorsque le for loop qui me popule liste2 et rXTitre est complet.
             
         };
@@ -103,23 +116,24 @@
         function wikiFr(json2) {
             for (var pageId in json2.query.pages) {
                 if (json2.query.pages[pageId].langlinks === undefined) {
-                    liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from);
-                    rXTitre.push(json2.query.normalized[0].to);
+//                    liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from);
+//                    rXTitre.push(json2.query.normalized[0].to);
+                    
+                    listeURL += "<a href='https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from + "' class='btn list-group-item' role='button'>" + json2.query.normalized[0].to + "</a>";
+                    
                 };
             };
-            printResultats();
-            
-           
-            
-        };
-            
-        function printResultats() {
-            console.log(liste2);
-            for (i = 0;i < liste2.length;i++) {
-                listeURL += "<a href='" + liste2[i] + "' class='btn list-group-item' role='button'>" + rXTitre[i] + "</a>";
-            };
+//            printResultats();
             $("#resultats").html(listeURL);
         };
+            
+//        function printResultats() {
+//            console.log(liste2);
+////            for (i = 0;i < liste2.length;i++) {
+////                listeURL += "<a href='" + liste2[i] + "' class='btn list-group-item' role='button'>" + rXTitre[i] + "</a>";
+////            };
+//            $("#resultats").html(listeURL);
+//        };
     });    
         
 </script>

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
+    
+    Ça marche, mais le test me sort encore des faux positifs et je dois mettre un message en quelque part pour quand il n'yaura pas de résultats.
 
 <head>
     <meta charset="utf-8">
@@ -77,12 +79,7 @@
 // ***************************************************** 
 // ********************  Fonctions  ********************
 // *****************************************************
-        
-        
-//        function lesResultats() {
-//             $("#resultats").html(listeURL);
-//        };
-        
+            
         function openSearch() {
             
             liste = [];
@@ -91,7 +88,7 @@
             listeURL = [];
             
             var quoi = $("#quoi").val();
-            $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=50&format=json&origin=*', laListe);
+            $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=100&format=json&origin=*', laListe);
         };
             
         function laListe(json) {
@@ -99,41 +96,18 @@
             for (y = 0; y <  liste.length; y++) {
                 rXs = rX.exec(liste[y])[1];
                 $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json&origin=*', wikiFr);
-            };
-            
-//            function pushPushInTheBush(json2) {
-//                if (json2.query.pages[pageId].langlinks === undefined) {
-//                    liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from);
-//                    rXTitre.push(json2.query.normalized[0].to);
-//                };
-//                wikiFr;
-//            };
-            
-//Mon problème est ici. laListe passe le getJSON à wikiFR *à chaque coup*, et celui-ci fait sont truc et l'envoie à printResultats à chaque fois. Je dois trouver le moyen de n'aller à getResultats que lorsque le for loop qui me popule liste2 et rXTitre est complet.
-            
+            };   
         };
             
         function wikiFr(json2) {
             for (var pageId in json2.query.pages) {
                 if (json2.query.pages[pageId].langlinks === undefined) {
-//                    liste2.push("https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from);
-//                    rXTitre.push(json2.query.normalized[0].to);
-                    
+//                    Ce test me sort encore des faux positifs.
                     listeURL += "<a href='https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from + "' class='btn list-group-item' role='button'>" + json2.query.normalized[0].to + "</a>";
-                    
                 };
             };
-//            printResultats();
             $("#resultats").html(listeURL);
         };
-            
-//        function printResultats() {
-//            console.log(liste2);
-////            for (i = 0;i < liste2.length;i++) {
-////                listeURL += "<a href='" + liste2[i] + "' class='btn list-group-item' role='button'>" + rXTitre[i] + "</a>";
-////            };
-//            $("#resultats").html(listeURL);
-//        };
     });    
         
 </script>

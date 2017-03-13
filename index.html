@@ -115,11 +115,12 @@
                 };
             };
             
-            if (listeURL.length == 0) {
+            if (listeURL.length !== 0) {
+                $("#resultats").html(listeURL);
+                
+            } else {
                 $("#resultats").removeClass("list-group");
                 $("#resultats").html("<p style='font-size:1.5em; text-align:center'>Il semble que tout ce qu'il y a a dire à ce sujet a déjà été dit en anglais.</p>");
-            } else {
-                $("#resultats").html(listeURL);
             };
         };
         });    

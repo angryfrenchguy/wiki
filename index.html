@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
+    
+<!--    Ça marche, mais le test me sort encore des faux positifs et je dois mettre un message en quelque part pour quand il n'yaura pas de résultats.-->
 
 <head>
     <meta charset="utf-8">
@@ -53,11 +55,7 @@
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="button" id="bouton">Cherche</button>
                     </span>
-                </div>
-                
-                <span id="fuck" class="input-group-btn">
-                <button class="btn btn-danger btn-block btn-lg" type="button" id="fo">Ah! Pis Fuck!</button>
-                </span>       
+                </div>       
             </div>
         </div>
         <br>
@@ -67,38 +65,53 @@
 
     <script>
         $(document).ready(function () {
-
-            $("#bouton").on("click", function () {
-                var quoi = $("#quoi").val();
-                $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&format=json', function (json) {
-                    var liste = json[3];
-                    var listeURL = "";
-                        
-                    for (i=0;i < liste.length;i++) {
-                        listeURL += "<a href='" + json[3][i] + "' class='btn list-group-item' role='button'>" + json[1][i] + "</a>";
-                    };
-                    $("#resultats").html(listeURL);
-                });
-            });
-
-            $("#fo").on("click", function () {
-
-                $("#resultats").html("<a href='https://fr.wikipedia.org/wiki/Special:Random' class='btn list-group-item' role='button'>Surprise!</a>");
-            });
             
-           $(window).on("resize load", function() {
-               if($(window).width() > 500) {
-                $("#fuck").appendTo("#rechercheIn");
-                $("#rechercheIn").removeClass("input-group-lg");
-                $("#fo").removeClass("btn-lg");
-               } else {
-                $("#fuck").appendTo("#rechercheOut");
-                $("#rechercheIn").addClass("input-group-lg");
-                $("#fo").addClass("btn-lg");
-            }
-           });
-        });
-    </script>
+            var liste = [];
+            var rX = /^https:\/\/fr.wikipedia.org\/wiki\/(.*)$/;
+            var rXs;
+            var liste2 = [];
+            var rXTitre = [];
+            var listeURL = [];
+            
+            $("#bouton").on("click", openSearch);
+        
+        
+// ***************************************************** 
+// ********************  Fonctions  ********************
+// *****************************************************
+            
+        function openSearch() {
+            
+            liste = [];
+            liste2 = [];
+            rXTitre = [];
+            listeURL = [];
+            
+            var quoi = $("#quoi").val();
+            $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=500&format=json&origin=*', laListe);
+        };
+            
+        function laListe(json) {
+            liste = json[3];
+            for (y = 0; y <  liste.length; y++) {
+                rXs = rX.exec(liste[y])[1];
+                $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&redirects&format=json&origin=*', wikiFr);
+            };   
+        };
+            
+        function wikiFr(json2) {
+            for (var pageId in json2.query.pages) {
+                console.log(json2.query.pages[pageId].langlinks);
+                if (json2.query.pages[pageId].langlinks === undefined) {
+//                    Ce test me sort encore des faux positifs.
+                    listeURL += "<a href='https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from + "' class='btn list-group-item' role='button'>" + json2.query.normalized[0].to + "</a>";
+                };
+            };
+            $("#resultats").html(listeURL);
+        };
+    });    
+        
+</script>
 
 </body>
 

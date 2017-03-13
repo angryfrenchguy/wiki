@@ -88,19 +88,20 @@
             listeURL = [];
             
             var quoi = $("#quoi").val();
-            $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=100&format=json&origin=*', laListe);
+            $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=500&format=json&origin=*', laListe);
         };
             
         function laListe(json) {
             liste = json[3];
             for (y = 0; y <  liste.length; y++) {
                 rXs = rX.exec(liste[y])[1];
-                $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&format=json&origin=*', wikiFr);
+                $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&redirects&format=json&origin=*', wikiFr);
             };   
         };
             
         function wikiFr(json2) {
             for (var pageId in json2.query.pages) {
+                console.log(json2.query.pages[pageId].langlinks);
                 if (json2.query.pages[pageId].langlinks === undefined) {
 //                    Ce test me sort encore des faux positifs.
                     listeURL += "<a href='https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from + "' class='btn list-group-item' role='button'>" + json2.query.normalized[0].to + "</a>";

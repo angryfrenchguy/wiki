@@ -101,15 +101,19 @@
             
         function wikiFr(json2) {
             for (var pageId in json2.query.pages) {
-                console.log(json2.query.pages[pageId].langlinks);
                 if (json2.query.pages[pageId].langlinks === undefined) {
-//                    Ce test me sort encore des faux positifs.
                     listeURL += "<a href='https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from + "' class='btn list-group-item' role='button'>" + json2.query.normalized[0].to + "</a>";
                 };
             };
-            $("#resultats").html(listeURL);
+            
+            if (listeURL.length == 0) {
+                $("#resultats").removeClass("list-group");
+                $("#resultats").html("<p style='font-size:1.5em; text-align:center'>Il semble que tout ce qu'il y a a dire à ce sujet a déjà été dit en anglais.</p>");
+            } else {
+                $("#resultats").html(listeURL);
+            };
         };
-    });    
+        });    
         
 </script>
 

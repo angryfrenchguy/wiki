@@ -93,10 +93,19 @@
             
         function laListe(json) {
             liste = json[3];
+            
+            if(liste.length == 0) {
+                $("#resultats").removeClass("list-group");
+                $("#resultats").html("<p style='font-size:1.5em; text-align:center'>Il n'y a pas de pages Wikipédia en français à ce sujet.</p>");
+                
+            } else {
+            
             for (y = 0; y <  liste.length; y++) {
                 rXs = rX.exec(liste[y])[1];
                 $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&redirects&format=json&origin=*', wikiFr);
-            };   
+            };
+                };
+            
         };
             
         function wikiFr(json2) {

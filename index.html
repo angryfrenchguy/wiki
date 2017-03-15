@@ -51,7 +51,9 @@
         <div class="row">
             <div  id="rechercheOut" class="col-md-6 col-md-offset-3">
                 <div id="rechercheIn" class="input-group input-group-lg">
-                    <input type="text" class="form-control" id="quoi">
+                    <input type="text" class="form-control" id="quoi" onkeydown="if (event.keyCode == 13)
+                        document.getElementById('bouton').click()">
+<!--                    Ça marche, sauf que là j'ai à nouveau le texte fantôme qui s'imprime avant la réponse...-->
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="button" id="bouton">Cherche</button>
                     </span>
@@ -78,7 +80,8 @@
         
 // ***************************************************** 
 // ********************  Fonctions  ********************
-// *****************************************************
+// *****************************************************   
+            
             
         function openSearch() {
             

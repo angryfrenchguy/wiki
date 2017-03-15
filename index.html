@@ -104,8 +104,7 @@
                 rXs = rX.exec(liste[y])[1];
                 $.getJSON('https://fr.wikipedia.org/w/api.php?action=query&titles=' + rXs + '&prop=langlinks&lllang=en&redirects&format=json&origin=*', wikiFr);
             };
-                };
-            
+            };
         };
             
         function wikiFr(json2) {
@@ -113,12 +112,13 @@
                 if (json2.query.pages[pageId].langlinks === undefined) {
                     listeURL += "<a href='https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from + "' class='btn list-group-item' role='button'>" + json2.query.normalized[0].to + "</a>";
                 };
-            };
-            
-            if (listeURL.length !== 0) {
                 $("#resultats").html(listeURL);
-                
-            } else {
+            };
+            rien();
+        };
+            
+        function rien() {
+            if (listeURL.length == 0) {
                 $("#resultats").removeClass("list-group");
                 $("#resultats").html("<p style='font-size:1.5em; text-align:center'>Il semble que tout ce qu'il y a a dire à ce sujet a déjà été dit en anglais.</p>");
             };

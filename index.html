@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-    
-<!--    Ça marche, mais le test me sort encore des faux positifs et je dois mettre un message en quelque part pour quand il n'yaura pas de résultats.-->
 
 <head>
     <meta charset="utf-8">
@@ -9,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Quelque Chose avec Wikipedia</title>
+    <title>Wikipedia pas en anglais</title>
 
     <link href="https://fonts.googleapis.com/css?family=Francois+One" rel="stylesheet">
 
@@ -20,6 +18,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <!-- Optional theme -->
+    <!-- ?? -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
@@ -53,7 +52,6 @@
                 <div id="rechercheIn" class="input-group input-group-lg">
                     <input type="text" class="form-control" id="quoi" onkeydown="if (event.keyCode == 13)
                         document.getElementById('bouton').click()">
-<!--                    Ça marche, sauf que là j'ai à nouveau le texte fantôme qui s'imprime avant la réponse...-->
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="button" id="bouton">Cherche</button>
                     </span>
@@ -83,6 +81,9 @@
 // *****************************************************   
             
             
+//            La première fonction fait une recheche normale sur Wikipédia et revient avec les résultats.
+            
+            
         function openSearch() {
             
             liste = [];
@@ -94,8 +95,12 @@
             $.getJSON('https://fr.wikipedia.org/w/api.php?action=opensearch&search=' + quoi + '&limit=500&format=json&origin=*', laListe);
         };
             
+//            La deuxième fonction isole l'url des liens vers les différents résultats dans le json (json[3]), puis extrait le *titre* de la page pour l'insérer dans un deuxième url de l'API qui va chercher les 'langlinks', i.e., les liens vers les différentes versions linguistiques de cette page.
+            
         function laListe(json) {
             liste = json[3];
+            
+//            Message au cas où il n'y ait pas de résultats en français.
             
             if(liste.length == 0) {
                 $("#resultats").removeClass("list-group");
@@ -110,15 +115,18 @@
             };
         };
             
-        function wikiFr(json2) {
+//            S'il n'y a pas de langlink vers l'anglais, on formate l'url pour l'insérer comme table/bouton dans la liste des résultats.
+            
+        function wikiFr(json2, rien) {
             for (var pageId in json2.query.pages) {
                 if (json2.query.pages[pageId].langlinks === undefined) {
                     listeURL += "<a href='https://fr.wikipedia.org/wiki/" + json2.query.normalized[0].from + "' class='btn list-group-item' role='button'>" + json2.query.normalized[0].to + "</a>";
                 };
                 $("#resultats").html(listeURL);
             };
-            rien();
         };
+        
+//            Le message d'erreur qui s'affiche si tous les pages ont une version anglais est isolé dans une fonction à part, parce que sinon il s'affiche en fantôme avant le retour des résultats et c'est laid.
             
         function rien() {
             if (listeURL.length == 0) {
